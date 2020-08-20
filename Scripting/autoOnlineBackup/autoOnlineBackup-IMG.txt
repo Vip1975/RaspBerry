@@ -1,0 +1,59 @@
+
+### Backup sdCard
+
+#Create File
+mkdir /home/<username>/scripts
+mkdir /home/<username>/scripts/logs
+sudo touch /home/lukas/scripts/BackupIMG.sh
+sudo nano /home/lukas/scripts/BackupIMG.sh
+——————————————————
+# Variables
+# LF: logFile
+# TF: backupFile (TAR File)
+# IF: backupInput
+# OF: ImageFile
+DOW=$(date +"%a")
+BCKTYPE="IMG"
+SRVNAME=$(hostname)
+LF="/home/lukas/scripts/logs/${SRVNAME}_${BCKTYPE}.log"
+TF="/shares/backup/img/${SRVNAME}_${BCKTYPE}-${DOW}.tar.gz"
+IF="/dev/mmcblk0"
+OF="/shares/backup/img/$SRVNAME-$DOW.img"
+
+test -f ${LF} && sudo rm ${LF}  >> ${LF} 
+touch ${LF} 
+echo Variable List:  >> ${LF} 
+echo Day o Week: ${DOW} >> ${LF} 
+echo BackupType: ${BCKTYPE} >> ${LF} 
+echo ServerName: ${SRVNAME} >> ${LF} 
+echo LogFile: ${LF} >> ${LF} 
+echo TAR File: ${TF} >> ${LF} 
+echo Data Input: ${IF} >> ${LF} 
+echo Image File: ${OF} >> ${LF} 
+echo —————— >> ${LF} 
+echo Backup Process >> ${LF}  
+echo StratTime-IMG: $(date) >> ${LF} 
+test -f ${OF} && sudo rm ${OF} 
+sudo dd if=$IF of=$OF bs=1MB >> $LF
+echo EndTime-IMG: $(date) >> ${LF} 
+echo StratTime-ZIP: $(date) >> ${LF} 
+test -f ${TF} && sudo rm ${TF}  >> ${LF} 
+sudo tar -czvf ${TF} ${OF} >> ${LF}
+test -f ${OF} && sudo rm ${OF} 
+echo EndTime-ZIP: $(date) >> ${LF} 
+——————————————————
+#Grant permission
+sudo chmod 755 /home/lukas/scripts/BackupIMG.sh
+
+#execute File
+sudo sh /home/lukas/scripts/BackupIMG.sh
+
+#Taskmanager
+Sudo crontab -e
+——————————————————
+10 1 * * * /home/<userName>/scripts/BackupIMG.sh >/dev/null 2>&1
+——————————————————
+
+# reStart Service
+sudo service cron restart
+

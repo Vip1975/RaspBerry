@@ -1,0 +1,51 @@
+
+### Backup all logFiles
+
+#Create File
+mkdir /home/<username>/scripts
+mkdir /home/<username>/scripts/logs
+sudo touch /home/<userName>/scripts/BackupLOG.sh
+sudo nano /home/<userName>/scripts/BackupLOG.sh
+——————————————————
+# Variables
+# LF: logFile
+# TF: backupFile (TAR File)
+# IF: backupInput
+DOW=$(date +"%a")
+BCKTYPE="LOG"
+SRVNAME=$(hostname)
+LF="/home/<username>/scripts/logs/${SRVNAME}_${BCKTYPE}.log"
+TF="/shares/backup/log/${SRVNAME}_${BCKTYPE}-${DOW}.tar.gz"
+IF="/var/log"
+
+test -f ${LF} && sudo rm ${LF}  >> ${LF} 
+touch ${LF} 
+echo Variable List: >> ${LF} 
+echo Day o Week: ${DOW} >> ${LF} 
+echo BackupType: ${BCKTYPE} >> ${LF} 
+echo ServerName: ${SRVNAME} >> ${LF} 
+echo LogFile: ${LF} >> ${LF} 
+echo TAR File: ${TF} >> ${LF} 
+echo Data Input: ${IF} >> ${LF} 
+echo —————— >> ${LF} 
+echo Backup Process >> ${LF}  
+echo StratTime: $(date) >> ${LF} 
+test -f ${TF} && sudo rm ${TF} >> ${LF} 
+sudo tar -czvf ${TF} ${IF} >> ${LF}
+echo EndTime: $(date) >> ${LF} 
+——————————————————
+
+#Grant permission
+sudo chmod 755 /home/<userName>/scripts/BackupLOG.sh
+
+#Execute
+sudo sh /home/<userName>/scripts/BackupLOG.sh
+
+#Taskmanager
+Sudo crontab -e
+——————————————————
+1 1 * * * /home/<userName>/scripts/BackupLOG.sh >/dev/null 2>&1
+——————————————————
+
+# reStart Service
+sudo service cron restart
