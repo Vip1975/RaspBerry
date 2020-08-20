@@ -1,0 +1,44 @@
+# create Folder
+mkdir /home/<username>/scripts
+mkdir /home/<username>/scripts/logs
+
+
+# create & edit Script (File)
+sudo touch /home/<username>/scripts/updateUpgrade.sh
+sudo nano /home/<username>/scripts/updateUpgrade.sh
+——————————
+echo StratTime: $(date) > /home/<username>/scripts/logs/DailyUpdate.log
+sudo apt-get update && sudo apt-get -y upgrade > /home/<username>/scripts/logs/DailyUpdate.log
+echo EndTime: $(date) >> /home/<username>/scripts/logs/DailyUpdate.log
+——————————
+
+
+# give the appropriate rights
+sudo chmod 755 /home/<username>/scripts/updateUpgrade.sh
+
+
+# edit conTab (AutoStart // Taskmanager)
+# The Script will start daily at 0:01
+sudo crontab -e
+——————————
+1 0 * * * /home/<username>/scripts/updateUpgrade.sh >/dev/null 2>&1
+——————————
+
+
+# reStart Service
+sudo service cron restart
+
+##################################################################################
+
+### Functions / Maintenance
+# Start Script manualy
+sudo sh /home/<username>/scripts/updateUpgrade.sh 
+
+# Check Log
+sudo cat /home/<username>/scripts/logs/DailyUpdate.log
+
+# Backup Script
+sudo cp sudo sh /home/<username>/scripts/updateUpgrade.sh sudo sh /home/<username>/scripts/updateUpgrade.old
+
+# Edit Script
+sudo nano /home/<username>/scripts/updateUpgrade.sh
