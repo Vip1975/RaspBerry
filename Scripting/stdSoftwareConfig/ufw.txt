@@ -1,0 +1,79 @@
+
+# System updates
+sudo apt-get update && sudo apt-get -y upgrade
+
+############################
+
+### UFW installation & Configuration
+
+# FireWall Setup (UFW)
+sudo apt install ufw
+
+# Edit / Add Rules
+
+# ON eRRoR: 
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+
+# allow all outgoing traffic!
+sudo ufw default allow outgoing comment 'allow all outgoing traffic!'
+
+# deny all outgoing traffic!
+sudo ufw default deny incoming comment 'deny all outgoing traffic!'
+
+# allow ssh over port  11133/tcp 
+sudo ufw allow from 192.168.178.0/24 to any port 11133 comment 'SSH only from PRV NW'
+
+# Limit attempts to login (SSH) in 30 seconds (After 6 tries: block)
+sudo ufw limit 11133/tcp comment 'limit ssh login tries'
+
+# Open DNS Ports (TCP & UDP)
+sudo ufw allow 53/tcp comment 'Open DNS port 53'
+sudo ufw allow 53/udp comment 'Open DNS  port 53'
+
+# Open WebMin Ports (TCP & UDP)
+sudo ufw allow 10000/tcp comment 'Open WebMin port 10000'
+
+# Open OpenVPN Ports (UDP)
+sudo ufw allow out 1194/udp 
+sudo ufw allow out 1194/tcp 
+
+# Enable Logging
+# Create LogFile
+sudo touch /var/log/ufw.log
+sudo ufw logging on 
+
+# Check Log File
+sudo tail -f /var/log/ufw.log
+
+# Enable, Disable & Check FireWall Status
+sudo ufw disable 
+sudo ufw enable
+sudo ufw status
+
+# How to check the status of open DNS ports (53: DNS // 11133: SSH)
+ss -tulpn | grep :53
+ss -tulpn | grep :11133
+ss -tulpn | grep :1194
+
+# Test the Firewall
+sudo ufw status
+---------------
+Status: active
+
+To                         Action      From
+--                         ------      ----
+11124                      ALLOW       192.168.178.0/24           # SSH only from PRV NW
+11124/tcp                  LIMIT       Anywhere                   # limit ssh login tries
+53/tcp                     ALLOW       Anywhere                   # Open DNS port 53
+53/udp                     ALLOW       Anywhere                   # Open DNS  port 53
+10000/tcp                  ALLOW       Anywhere                   # Open WebMin port 10000
+11124/tcp (v6)             LIMIT       Anywhere (v6)              # limit ssh login tries
+53/tcp (v6)                ALLOW       Anywhere (v6)              # Open DNS port 53
+53/udp (v6)                ALLOW       Anywhere (v6)              # Open DNS  port 53
+10000/tcp (v6)             ALLOW       Anywhere (v6)              # Open WebMin port 10000
+
+1194/udp                   ALLOW OUT   Anywhere                  
+1194/tcp                   ALLOW OUT   Anywhere                  
+1194/udp (v6)              ALLOW OUT   Anywhere (v6)             
+1194/tcp (v6)              ALLOW OUT   Anywhere (v6)   
+---------------

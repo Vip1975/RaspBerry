@@ -1,0 +1,93 @@
+
+# openVPN installation & Configuration
+# https://github.com/Nyr/openvpn-install
+
+sudo -i
+
+wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
+
+————————————————————————————
+Welcome to this OpenVPN road warrior installer!
+
+This server is behind NAT. What is the public IPv4 address or hostname?
+Public IPv4 address / hostname [178.200.121.219]: lowartz.ddns.net    
+
+Which protocol should OpenVPN use?
+   1) UDP (recommended)
+   2) TCP
+Protocol [1]: 1
+
+What port should OpenVPN listen to?
+Port [1194]: 1194
+
+Select a DNS server for the clients:
+   1) Current system resolvers
+   2) Google
+   3) 1.1.1.1
+   4) OpenDNS
+   5) Quad9
+   6) AdGuard
+DNS server [1]: 1
+
+Enter a name for the first client:
+Name [client]: iPhone
+
+OpenVPN installation is ready to begin.
+Press any key to continue...
+————————————————————————————
+
+#Grant permission
+chmod +x openvpn-install.sh 
+
+#Execute Script
+./openvpn-install.sh
+
+————————————————————————————
+OpenVPN is already installed.
+
+Select an option:
+   1) Add a new client
+   2) Revoke an existing client
+   3) Remove OpenVPN
+   4) Exit
+Option: 1
+
+Provide a name for the client:
+Name: iPad
+Using SSL: openssl OpenSSL 1.1.1d  10 Sep 2019
+Generating a RSA private key
+.................................+++++
+..........+++++
+writing new private key to '/etc/openvpn/server/easy-rsa/pki/easy-rsa-14774.83oyWm/tmp.xqlNnE'
+-----
+Using configuration from /etc/openvpn/server/easy-rsa/pki/easy-rsa-14774.83oyWm/tmp.ljZWCE
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'iPad'
+Certificate is to be certified until Aug  7 08:47:44 2030 GMT (3650 days)
+
+Write out database with 1 new entries
+Data Base Updated
+
+
+iPad added. Configuration available in: /root/iPad.ovpn
+ 
+————————————————————————————
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

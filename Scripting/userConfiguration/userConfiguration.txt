@@ -1,0 +1,82 @@
+
+# using the Pi User (permit root to login using ssh)
+ssh -p 22 pi@192.168.178.124
+
+# backup sshd_config
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config_old
+
+# edit sshd_config
+sudo nano /etc/ssh/sshd_config 
+——————————————————
+PermitRootLogin yes
+——————————————————
+
+# restart SSH Service
+sudo systemctl restart ssh
+
+# set root password / change root password
+sudo passwd root
+
+# logout pi user
+logout
+
+############################
+
+# login as root
+ssh -p 22 root@192.168.178.124
+
+# change username (pi —> <neuUserName>)
+sudo usermod -l <neuUserName> pi
+
+# change homeDrive
+sudo usermod -m -d /home/<neuUserName> <neuUserName>
+
+# change passWD
+sudo passwd <neuUserName>
+
+# Set Bash Access
+sudo usermod -s /bin/bash <neuUserName>
+
+# Set Group
+sudo usermod -g users <neuUserName>
+
+# Grand Access  (sudo & ssh)
+sudo gpasswd -a <neuUserName> sudo
+sudo gpasswd -a <neuUserName> ssh
+
+INFO (permit <neuUserName> to login using ssh)
+nano /etc/ssh/sshd_config 
+——————————————————
+AllowUsers root <neuUserName>
+——————————————————
+
+# Check user <neuUserName> (Group membership)
+sudo id <neuUserName>
+
+# logout root user
+logout
+
+############################
+
+# login as <neuUserName>
+ssh -p 22 <neuUserName>@192.168.178.124
+
+# Check home-folder
+pwd
+
+# Check sudo access
+sudo apt-get update
+
+# lock root acount
+sudo passwd -l root 
+
+# Disable root account to use ssh
+sudo nano /etc/ssh/sshd_config 
+——————————————————
+PermitRootLogin no
+AllowUsers <neuUserName>
+DenyUsers root
+——————————————————
+
+Feel free to copy and edit this script for your own personal usage.   
+

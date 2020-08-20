@@ -1,0 +1,148 @@
+5 - SSH configuration
+
+# Check ssh Service Status
+sudo systemctl status ssh
+
+# Show ssh configuration 
+sudo sshd -T
+
+# Backup configurationFile
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config_old
+
+# Edit Configuration / Harden SSH (Search, edit & Add the following configuration)
+sudo nano /etc/ssh/sshd_config 
+——————————————————
+Port 11333
+MaxAuthTries 3
+ClientAliveInterval 300
+ChallengeResponseAuthentication no
+UsePAM yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem       sftp    /usr/lib/openssh/sftp-server
+X11Forwarding no
+Protocol 2
+IgnoreRhosts yes
+UseDNS yes
+PermitEmptyPasswords no
+AllowGroups ssh
+——————————————————
+
+# Test Configuration
+sshd -t
+
+# restart SSH Service
+sudo systemctl restart ssh
+
+# logout <neuUserName> user
+logout
+
+# logon <neuUserName> user
+ssh -p 11124 <neuUserName>@<RaspiPi IP Adress>
+
+# Check current connections
+sudo ss -n -o state established '( dport = : 11333 or sport = : 11333 )'
+
+############################
+
+### SSH Actions
+# Start ssh
+sudo systemctl start ssh
+
+# Restart ssh
+sudo systemctl restart ssh
+
+# Stop ssh
+sudo systemctl stop ssh
+
+# Autostart
+sudo systemctl enable ssh
+
+# disable Autostart
+sudo systemctl disable ssh
+
+# Test Autostart
+systemctl is-enabled ssh
+
+# Status
+sudo systemctl status ssh
+
+# detailed Status
+sudo systemctl show ssh
+
+####################################################################################
+
+## Adding a SSH-CERT PK-Infrastructure (Rasbian)
+
+# Check for current Cert
+sudo ls ~/.ssh
+
+# Generate Cert (Remember your Passfrase!!)
+sudo ssh-keygen
+
+# Check for current Set again
+sudo ls ~/.ssh
+
+# Check Cert contents
+sudo cat ~/.ssh/id_rsa.pub
+
+# ToDo for each new Client (you want to access from here)
+ssh-copy-id <neuUserName>@<RaspiPi IP Adress> -p 11333
+
+# ToDo only on client from who is accessed (MacBook / SSH Client)
+ssh-add -K ~/.ssh/id_rsa
+
+# logout <neuUserName> user
+sudo logout
+
+# logon <neuUserName> user (No PassWD required)
+ssh -p 11333 <neuUserName>@<RaspiPi IP Adress>
+
+Edit /etc/ssh/sshd_config
+sudo nano /etc/ssh/sshd_config 
+——————————————————
+PasswordAuthentication no
+——————————————————
+
+####################################################################################
+
+# Fail2Ban installation & Configuration
+sudo apt-get install fail2ban
+
+# Backup configuration File
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+# edit configuration File
+sudo nano /etc/fail2ban/jail.local
+——————————————————
+[sshd]
+enabled = true
+filter = sshd
+banaction = iptables-multiport
+bantime = 1800
+maxretry = 2
+#mode   = normal
+port = 11333
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+[sshd-ddos]
+filter  = sshd[mode=ddos]
+port   = 11333
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+enabled = true
+——————————————————
+
+# Backup configuration File
+sudo cp  /etc/fail2ban/jail.local /etc/fail2ban/jail.local_old
+
+# Restart Service
+sudo systemctl restart fail2ban 
+
+# Check Service Status
+sudo systemctl status fail2ban 
+
+# Info!!
+# To unban a band IP Adress, use the following method
+sudo fail2ban-client set ssh unbind <Banned IP Adress>

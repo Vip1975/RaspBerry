@@ -1,0 +1,4 @@
+
+# MC installation & Configuration
+sudo apt-get update
+sudo apt-get install mc

@@ -1,0 +1,4 @@
+
+# gzip installation & Configuration
+sudo apt-get update
+sudo apt-get install gzip
