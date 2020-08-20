@@ -1,0 +1,19 @@
+# Static IP Profile (DHCP & Profile Based)
+
+# Backup configuration file
+sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf_old
+
+# Edit configuration file
+sudo nano /etc/dhcpcd.conf
+——————————
+profile fallback_eth0
+	static ip_address=192.168.178.124/24
+	static routers=192.168.178.1
+	static domain_name_servers= 192.168.178.122
+
+interface eth0
+	fallback fallback_eth0
+——————————
+
+# Reboot the system
+sudo reboot / sudo init 6
